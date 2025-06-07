@@ -1,4 +1,6 @@
 import { motion } from "framer-motion";
+import Image from "next/image";
+import type { Pokemon } from "../types";
 
 const typeColors: Record<string, string> = {
   bug: "bg-lime-500",
@@ -15,13 +17,6 @@ const typeColors: Record<string, string> = {
   dragon: "bg-indigo-700",
   grass: "bg-green-500",
   normal: "bg-gray-400",
-};
-
-type Pokemon = {
-  id: number;
-  name: string;
-  types: { type: { name: string } }[];
-  sprites: { other: { [key: string]: { front_default: string } } };
 };
 
 export default function PokedexGrid({ pokemons, onSelect }: { pokemons: Pokemon[]; onSelect: (p: Pokemon) => void }) {
@@ -41,11 +36,13 @@ export default function PokedexGrid({ pokemons, onSelect }: { pokemons: Pokemon[
             className={`rounded-xl shadow-lg cursor-pointer p-4 flex flex-col items-center ${color} text-white font-semibold transition-colors`}
             onClick={() => onSelect(pokemon)}
           >
-            <img
+            <Image
               src={pokemon.sprites.other["official-artwork"].front_default}
               alt={pokemon.name}
+              width={96}
+              height={96}
               className="w-24 h-24 mb-2 drop-shadow-lg"
-              loading="lazy"
+              unoptimized
             />
             <div className="capitalize text-lg mb-1">{pokemon.name}</div>
             <div className="flex gap-2">

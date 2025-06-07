@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 
@@ -40,17 +40,18 @@ export default function PokemonModal({ pokemon, onClose, voices, voiceIndex }: P
   }, [pokemon]);
 
   // Get two random moves (no duplicates)
-  let randomMoves: string[] = [];
-  if (pokemon.moves.length > 1) {
-    const first = pokemon.moves[Math.floor(Math.random() * pokemon.moves.length)].move.name;
-    let second = first;
-    while (second === first && pokemon.moves.length > 1) {
-      second = pokemon.moves[Math.floor(Math.random() * pokemon.moves.length)].move.name;
+  const randomMoves = useMemo(() => {
+    if (pokemon.moves.length > 1) {
+      const first = pokemon.moves[Math.floor(Math.random() * pokemon.moves.length)].move.name;
+      let second = first;
+      while (second === first && pokemon.moves.length > 1) {
+        second = pokemon.moves[Math.floor(Math.random() * pokemon.moves.length)].move.name;
+      }
+      return [first, second];
+    } else {
+      return pokemon.moves.map((m) => m.move.name);
     }
-    randomMoves = [first, second];
-  } else {
-    randomMoves = pokemon.moves.map((m) => m.move.name);
-  }
+  }, [pokemon.moves]);
 
   // Get stats
   const getStat = (name: string) => pokemon.stats.find((s) => s.stat.name === name)?.base_stat || 0;
@@ -107,10 +108,13 @@ export default function PokemonModal({ pokemon, onClose, voices, voiceIndex }: P
         >
           ×
         </button>
-        <img
+        <Image
           src={pokemon.sprites.other["official-artwork"].front_default}
           alt={pokemon.name}
+          width={144}
+          height={144}
           className="w-36 h-36 mb-3 rounded-full border-4 border-indigo-200 shadow-xl bg-white object-contain"
+          unoptimized
         />
         <div className="capitalize text-3xl font-extrabold mb-2 text-gray-800 tracking-wide text-center drop-shadow">{pokemon.name}</div>
         <div className="mb-2 text-xs text-gray-500 font-medium">Voice: {voices[voiceIndex]?.name || "Default"}</div>

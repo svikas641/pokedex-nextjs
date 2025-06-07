@@ -1,14 +1,14 @@
 "use client";
 
-import Image from "next/image";
 import { useEffect, useState, useRef } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
 import PokedexGrid from "./components/PokedexGrid";
 import PokemonModal from "./components/PokemonModal";
+import type { Pokemon } from "./types";
 
 export default function Home() {
-  const [selected, setSelected] = useState<null | any>(null);
-  const [pokemons, setPokemons] = useState<any[]>([]);
+  const [selected, setSelected] = useState<Pokemon | null>(null);
+  const [pokemons, setPokemons] = useState<Pokemon[]>([]);
   const [loading, setLoading] = useState(true);
   const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
   const [voiceIndex, setVoiceIndex] = useState(0);
@@ -49,7 +49,7 @@ export default function Home() {
       const randoms = data.results;
       // Fetch details for each
       const details = await Promise.all(
-        randoms.map((p: any) => fetch(p.url).then((r) => r.json()))
+        randoms.map((p: { url: string }) => fetch(p.url).then((r) => r.json()))
       );
       setPokemons(details);
       setLoading(false);
@@ -90,7 +90,7 @@ export default function Home() {
           ) : (
             <PokedexGrid
               pokemons={search.trim() ? pokemons.filter(p => p.name.toLowerCase().includes(search.trim().toLowerCase())) : pokemons}
-              onSelect={voices.length > 0 ? setSelected : () => {}}
+              onSelect={voices.length > 0 ? (p => setSelected(p)) : () => {}}
             />
           )}
         </main>
