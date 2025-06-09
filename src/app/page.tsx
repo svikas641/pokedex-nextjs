@@ -44,7 +44,7 @@ export default function Home() {
   useEffect(() => {
     async function fetchPokemons() {
       setLoading(true);
-      const res = await fetch("https://pokeapi.co/api/v2/pokemon?limit=500");
+      const res = await fetch("https://pokeapi.co/api/v2/pokemon?limit=100");
       const data = await res.json();
       const randoms = data.results;
       // Fetch details for each
